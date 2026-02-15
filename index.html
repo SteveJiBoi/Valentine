@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>情人节快乐 ❤️</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
+button {
+    font-size: 20px;
+    padding: 15px 30px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#yes {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#no {
+    background-color: #f44336;
+    color: white;
+    position: absolute;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h1>Kimi 宝宝要不要跟我一起过情人节？</h1>
+
+    <button id="yes" onclick="goLove()">要！</button>
+    <button id="no">不要</button>
+</div>
+
+<script>
+
+const noBtn = document.getElementById("no");
+
+noBtn.addEventListener("mouseover", function() {
+
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 50);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+});
+
+function goLove() {
+    window.location.href = "love.html";
+}
+
+</script>
+
+</body>
+</html>
