@@ -2,66 +2,140 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>情人节快乐 ❤️</title>
+<title>❤️ 情人节快乐 ❤️</title>
 
 <style>
+
 body {
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    margin: 0;
     height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Arial, sans-serif;
-    text-align: center;
+    font-family: "Microsoft YaHei", sans-serif;
 }
 
 .container {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    text-align: center;
+    color: white;
+    z-index: 10;
 }
 
 h1 {
-    margin-bottom: 30px;
+    font-size: 40px;
+    min-height: 60px;
 }
 
 button {
-    font-size: 20px;
-    padding: 15px 30px;
-    margin: 10px;
+    font-size: 22px;
+    padding: 15px 35px;
+    margin: 15px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 #yes {
-    background-color: #4CAF50;
+    background: #00c853;
     color: white;
+    box-shadow: 0 0 20px #00c853;
+}
+
+#yes:hover {
+    transform: scale(1.1);
 }
 
 #no {
-    background-color: #f44336;
+    background: #d50000;
     color: white;
     position: absolute;
 }
+
+.heart {
+    position: absolute;
+    color: rgba(255,255,255,0.8);
+    font-size: 20px;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    from {
+        transform: translateY(100vh);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-10vh);
+        opacity: 0;
+    }
+}
+
 </style>
 
 </head>
 <body>
 
 <div class="container">
-    <h1>Kimi 宝宝要不要跟我一起过情人节？</h1>
 
-    <button id="yes" onclick="goLove()">要！</button>
+    <h1 id="text"></h1>
+
+    <button id="yes">要！</button>
     <button id="no">不要</button>
+
 </div>
 
 <script>
 
+// typing effect
+
+const message = "Kimi 宝宝要不要跟我一起过情人节？ ❤️";
+let i = 0;
+
+function typing() {
+
+    if (i < message.length) {
+        document.getElementById("text").innerHTML += message.charAt(i);
+        i++;
+        setTimeout(typing, 80);
+    }
+
+}
+
+typing();
+
+
+// heart animation
+
+function createHeart() {
+
+    const heart = document.createElement("div");
+
+    heart.className = "heart";
+
+    heart.innerHTML = "❤️";
+
+    heart.style.left = Math.random() * 100 + "vw";
+
+    heart.style.fontSize = Math.random() * 20 + 20 + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 6000);
+
+}
+
+setInterval(createHeart, 300);
+
+
+// no button escape
+
 const noBtn = document.getElementById("no");
 
-noBtn.addEventListener("mouseover", function() {
+noBtn.addEventListener("mouseover", () => {
 
     const x = Math.random() * (window.innerWidth - 100);
     const y = Math.random() * (window.innerHeight - 50);
@@ -71,9 +145,29 @@ noBtn.addEventListener("mouseover", function() {
 
 });
 
-function goLove() {
+
+// yes button grows
+
+const yesBtn = document.getElementById("yes");
+
+let scale = 1;
+
+noBtn.addEventListener("mouseover", () => {
+
+    scale += 0.1;
+
+    yesBtn.style.transform = `scale(${scale})`;
+
+});
+
+
+// yes click
+
+yesBtn.addEventListener("click", () => {
+
     window.location.href = "love.html";
-}
+
+});
 
 </script>
 
