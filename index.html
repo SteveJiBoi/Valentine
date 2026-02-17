@@ -3,173 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <title>❤️ 情人节快乐 ❤️</title>
-
 <style>
-
-body {
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
-    background: linear-gradient(135deg, #ff758c, #ff7eb3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: "Microsoft YaHei", sans-serif;
-}
-
-.container {
-    text-align: center;
-    color: white;
-    z-index: 10;
-}
-
-h1 {
-    font-size: 40px;
-    min-height: 60px;
-}
-
-button {
-    font-size: 22px;
-    padding: 15px 35px;
-    margin: 15px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-#yes {
-    background: #00c853;
-    color: white;
-    box-shadow: 0 0 20px #00c853;
-}
-
-#yes:hover {
-    transform: scale(1.1);
-}
-
-#no {
-    background: #d50000;
-    color: white;
-    position: absolute;
-}
-
-.heart {
-    position: absolute;
-    color: rgba(255,255,255,0.8);
-    font-size: 20px;
-    animation: float 6s linear infinite;
-}
-
-@keyframes float {
-    from {
-        transform: translateY(100vh);
-        opacity: 1;
+    /* 原有样式保留，略作调整 */
+    body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(135deg, #ff758c, #ff7eb3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Microsoft YaHei", sans-serif;
     }
-    to {
-        transform: translateY(-10vh);
-        opacity: 0;
+    .container {
+        text-align: center;
+        color: white;
+        z-index: 10;
     }
-}
-
+    h1 {
+        font-size: 40px;
+        min-height: 60px;
+    }
+    button {
+        font-size: 22px;
+        padding: 15px 35px;
+        margin: 15px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    #yes {
+        background: #00c853;
+        color: white;
+        box-shadow: 0 0 20px #00c853;
+    }
+    #yes:hover {
+        transform: scale(1.1);
+    }
+    #no {
+        background: #d50000;
+        color: white;
+        position: absolute;
+    }
+    .heart {
+        position: absolute;
+        color: rgba(255,255,255,0.8);
+        font-size: 20px;
+        animation: float 6s linear infinite;
+    }
+    @keyframes float {
+        from { transform: translateY(100vh); opacity: 1; }
+        to { transform: translateY(-10vh); opacity: 0; }
+    }
+    /* 音乐按钮 */
+    .music-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.3);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        color: white;
+        cursor: pointer;
+        z-index: 100;
+        backdrop-filter: blur(5px);
+    }
 </style>
-
 </head>
 <body>
+    <!-- 音乐控制按钮 -->
+    <button class="music-btn" id="musicToggle">🔊</button>
 
-<div class="container">
+    <div class="container">
+        <h1 id="text"></h1>
+        <button id="yes">要！</button>
+        <button id="no">不要</button>
+    </div>
 
-    <h1 id="text"></h1>
+    <script>
+        // 音乐播放器（使用HTML5 Audio）
+        const audio = new Audio();
+        audio.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'; // 替换为你自己的音乐链接
+        audio.loop = true;
+        audio.volume = 0.5;
 
-    <button id="yes">要！</button>
-    <button id="no">不要</button>
+        // 自动播放策略：用户首次点击页面任意处开始播放
+        document.body.addEventListener('click', function initMusic() {
+            audio.play().catch(e => console.log('等待用户交互'));
+            document.body.removeEventListener('click', initMusic);
+        }, { once: true });
 
-</div>
+        const musicBtn = document.getElementById('musicToggle');
+        musicBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                musicBtn.textContent = '🔊';
+            } else {
+                audio.pause();
+                musicBtn.textContent = '🔇';
+            }
+        });
 
-<script>
+        // 打字效果
+        const message = "Kimi 宝宝要不要跟我一起过情人节？ ❤️";
+        let i = 0;
+        function typing() {
+            if (i < message.length) {
+                document.getElementById("text").innerHTML += message.charAt(i);
+                i++;
+                setTimeout(typing, 80);
+            }
+        }
+        typing();
 
-// typing effect
+        // 飘浮爱心
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = Math.random() * 20 + 20 + "px";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }
+        setInterval(createHeart, 300);
 
-const message = "Kimi 宝宝要不要跟我一起过情人节？ ❤️";
-let i = 0;
+        // 按钮交互
+        const noBtn = document.getElementById("no");
+        const yesBtn = document.getElementById("yes");
+        let scale = 1;
+        const MAX_SCALE = 3;
 
-function typing() {
+        // 移动端支持：同时监听 mouseover 和 touchstart
+        function moveNoButton() {
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+            const x = Math.max(0, Math.min(maxX, Math.random() * maxX));
+            const y = Math.max(0, Math.min(maxY, Math.random() * maxY));
+            noBtn.style.left = x + "px";
+            noBtn.style.top = y + "px";
 
-    if (i < message.length) {
-        document.getElementById("text").innerHTML += message.charAt(i);
-        i++;
-        setTimeout(typing, 80);
-    }
+            // 放大“要！”按钮
+            if (scale < MAX_SCALE) {
+                scale += 0.1;
+                yesBtn.style.transform = `scale(${scale})`;
+            }
+        }
 
-}
+        noBtn.addEventListener("mouseover", moveNoButton);
+        noBtn.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
 
-typing();
-
-
-// heart animation
-
-function createHeart() {
-
-    const heart = document.createElement("div");
-
-    heart.className = "heart";
-
-    heart.innerHTML = "❤️";
-
-    heart.style.left = Math.random() * 100 + "vw";
-
-    heart.style.fontSize = Math.random() * 20 + 20 + "px";
-
-    document.body.appendChild(heart);
-
-    setTimeout(() => {
-        heart.remove();
-    }, 6000);
-
-}
-
-setInterval(createHeart, 300);
-
-
-// no button escape
-
-const noBtn = document.getElementById("no");
-
-noBtn.addEventListener("mouseover", () => {
-
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 50);
-
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-
-});
-
-
-// yes button grows
-
-const yesBtn = document.getElementById("yes");
-
-let scale = 1;
-
-noBtn.addEventListener("mouseover", () => {
-
-    scale += 0.1;
-
-    yesBtn.style.transform = `scale(${scale})`;
-
-});
-
-
-// yes click
-
-yesBtn.addEventListener("click", () => {
-
-    window.location.href = "love.html";
-
-});
-
-</script>
-
+        // 点击“要！”进入回忆相册页
+        yesBtn.addEventListener("click", () => {
+            window.location.href = "gallery.html";
+        });
+    </script>
 </body>
 </html>
